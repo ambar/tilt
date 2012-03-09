@@ -1,0 +1,108 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+	<meta charset="UTF-8">
+	<title>Tilt Warrior</title>
+
+	<!-- <meta name="viewport" content="width=device-width" /> -->
+	<!--添加到主屏幕-->
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<!-- <meta names="apple-mobile-web-app-status-bar-style" content="black" /> -->
+	
+	<meta name="viewport" content="width=device-width; initial-scale=.8; maximum-scale=1.0; user-scalable=0;" />
+	<!-- <link href="http://fonts.googleapis.com/css?family=Sancreek" rel="stylesheet" type="text/css"> -->
+	<style type="text/css">
+		body{
+			margin:0;
+			min-height:100%;
+			background-color: #000;
+		}
+
+		#app{
+			font: 62.5% Monaco, Consolas, Monospace;
+			/*position: fixed;top:0;left:0;*/
+		}
+
+		#app canvas{
+			width: 0; height: 0;
+			background: -webkit-radial-gradient(center, cover, #2cf, #07c);
+			background:    -moz-radial-gradient(center, cover, #2cf, #07c);
+			background:     -ms-radial-gradient(center, cover, #2cf, #07c);
+			background:      -o-radial-gradient(center, cover, #2cf, #07c);
+			background:         radial-gradient(center, cover, #2cf, #07c);
+		}
+
+		#app .panel{
+			display: none;
+		}
+
+		#app .log{
+			top:0;right:1em;position: fixed;z-index: 200;color: #fff;font-size:12px;
+			width : 6em;
+			text-align:right;
+		}
+		#app .log.motion{
+			top:auto;bottom:0;
+		}
+
+	</style>
+</head>
+<body>
+
+<div id="app">
+	
+	<section class="canvas">
+		<canvas id="tilt-game">
+			<p>您的浏览器太古老了。试试: </p>
+			<ul>
+				<li><a href="http://www.google.com/chrome">Chrome</a></li>
+				<li><a href="http://www.mozilla.org/en-US/firefox/new/">Firefox</a></li>
+				<li><a href="http://windows.microsoft.com/zh-CN/internet-explorer/products/ie/home">IE 9</a></li>
+			</ul>
+		</canvas>
+	</section>
+
+	<section class="panel">
+		<div id="score">0</div>
+	</section>
+
+	<pre id="log-orientation" class="log"></pre>
+	<pre id="log-motion" class="log motion"></pre>
+
+</div>
+
+<!-- <script src="/js/device-motion-polyfill.js"></script> -->
+
+<!--ios & safari-->
+<script src="js/es5-shim.min.js"></script>
+
+<!--debug-->
+<script src="js/sea-debug.js" data-main="main"></script>
+
+<!--all in one-->
+<!-- <script src="js/sea.js" data-main="__build/main.js"></script> -->
+
+<script src="js/Stats.js"></script>
+<script>
+var stats = new Stats();
+
+// Align top-left
+stats.getDomElement().style.position = 'absolute';
+stats.getDomElement().style.left = '0px';
+stats.getDomElement().style.top = '0px';
+
+document.body.appendChild( stats.getDomElement() );
+
+setInterval( function () {
+
+    stats.update();
+
+}, 1000 / 60 );
+
+</script>
+</body>
+</html>
+
+</script>
+</body>
+</html>

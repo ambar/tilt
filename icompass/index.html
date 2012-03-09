@@ -1,0 +1,171 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+
+<meta charset="UTF-8">
+<title>iCompass</title>
+
+<script src="/js/device-motion-polyfill.js"></script>
+<meta name="viewport" content="width=device-width; initial-scale=0.7; maximum-scale=1.0; user-scalable=0;" />
+
+<style type="text/css">
+body{
+	margin:0;
+}
+
+#app{
+	width:100%;height:100%;position: fixed;
+	background:#000;color: #fff;
+	font:10px Arial;
+}
+
+#heading{
+	text-align:center;font-size:2em;
+}
+
+#compass{
+	position:absolute;left:50%;top:50%;
+	width: 400px;height:400px;
+	margin: -200px 0 0 -200px;	
+	border-radius:200px;
+	border: 4px solid #07c ;
+	
+
+	-webkit-transform:rotate(0deg);
+	-moz-transform:rotate(0deg);
+	-webkit-transition:-webkit-transform .4s ease;
+	-moz-transition:-moz-transform .4s ease;
+}
+	#compass *{
+		position: absolute;
+		left:50%;top:50%;
+	}
+	#compass .pointer{
+		-webkit-transform: translate(-40px,-148px);
+		-moz-transform: translate(-40px,-148px);
+		width:0; height:0;
+		border-style:solid;
+		border-width:0 40px 40px;
+		border-color:red transparent;
+	}
+	
+	#compass .pivot{
+		margin: -.5em 0 -.5em;
+		width:1em;height:1em;
+		border-radius:1em;
+		background-color:#cde;
+	}
+
+	#compass .direction{
+		font-size:30px;
+		width:1em;height:1em;
+		margin-left:-.5em;
+		-webkit-transform-origin:15px 140px;
+		-moz-transform-origin:15px 140px;
+		top:60px;
+	}
+	#compass .scale{
+		top:5px;
+		width:3em;height:1em;
+		margin-left: -1.5em;
+		display: block;
+		text-align:center;
+		font:16px serif; 
+		-webkit-transform-origin:24px 195px;
+		-moz-transform-origin:24px 195px;
+	}
+	#log{
+		position: fixed;z-index: 200;color: #fff;
+	}
+</style>
+</head>
+<body>
+
+<pre id="log"></pre>
+
+<div id="app">
+	<div id="heading">0°</div>
+	<div id="compass">
+		<div class="pointer"></div>
+		<div class="pivot"></div>
+		<span class="direction">北</span>
+		<span class="direction">西</span>
+		<span class="direction">南</span>
+		<span class="direction">东</span>
+	</div>
+</div>
+
+
+<script>
+var compass    = document.querySelector('#compass')
+var directions = compass.querySelectorAll('.direction')
+var heading = document.querySelector('#heading')
+var log     = document.querySelector('#log')
+var each    = Array.prototype.forEach
+
+var times = function(n,action,scope) {
+	var i = 0, scope = scope || n
+	n < 0 && (n=0)
+	while(i<n) action.call(scope, i++)
+}
+
+var propTransform = ['WebkitTransform','MozTransform','OTransform','msTransform','Transform']
+	.filter(function(key){ return key in document.body.style })[0]
+
+var rotateElements = function(els,offset) {
+	each.call(els,function(el,i) {
+		var deg = i * 360 / els.length
+		el.style[propTransform] = 'rotate(' + deg + 'deg)'
+	})
+}
+
+var scales = [], scales_count = 36
+
+times(scales_count, function(i) {
+	var scale = document.createElement('span')
+	scale.textContent = i * 360 / this
+	scale.classList.add('scale')
+	compass.appendChild( scale )
+	scales.push(scale)
+})
+
+// 排列刻度
+rotateElements(scales,190)
+
+// 排列方位
+rotateElements(directions,230)
+
+var _deg 
+var rotateCompass = function(deg) {
+	if( deg > 180 ) deg -= 360
+	if( _deg === deg ) return 'notchanged'
+	_deg = deg
+	compass.style[propTransform] = 'rotate(' + -deg + 'deg)'
+}
+
+var updateHeading = function(deg) {
+	document.title = heading.textContent = parseInt(deg) + '°'
+}
+
+window.onorientationchange = function(e) {
+	// console.log(window.orientation)
+	window.scrollTo(0, 1)
+}
+
+window.ondeviceorientation = function(e) {
+	var ch = e.webkitCompassHeading
+	if( ch === null || isNaN(ch) ) return
+	// console.log(ch,window.orientation)
+	log.textContent =[ch,e.alpha,e.beta,e.gamma]
+		.map(function(n) { return n.toFixed(2) }).join('\n')
+	updateHeading(ch)
+	rotateCompass(ch)
+}
+
+// updateHeading(0)
+// rotateCompass(90)
+
+</script>
+
+</body>
+</html>                                                                                                 
