@@ -1,3 +1,4 @@
+/*jshint undef:true */
 /*
 * 所有游戏逻辑
 */
@@ -8,10 +9,7 @@ var // requires eigine objects
 	wo       = require('../wo/wo'),
 	input    = require('../wo/input'),
 	stage    = require('../wo/stage'),
-	V        = require('../wo/vector'),
-	Color    = require('../wo/color').Color,
 	entities = require('../wo/entities'),
-	pressed  = input.letterFromKeyCode,
 	GameText = entities.GameText;
 
 var // requires game objects
@@ -25,11 +23,9 @@ var // game variables
 	ismobile        = /mobile|iphone/i.test( navigator.userAgent ),
 	log_motion      = document.querySelector('#log-motion'),
 	log_orientation = document.querySelector('#log-orientation'),
-	fighter         = null, 
+	fighter         = null,
 	game_over       = false,
 	game_over_text  = null,
-	game_pause_text = null,
-	game_start_text = null,
 	dot_spwan_timer = null;
 
 var on_fighter_update = function(e,dt) {
@@ -70,9 +66,7 @@ var on_dot_update = function(e,dt) {
 	var dot = this;
 
 	// kill
-	if( dot.collidable 
-		&& distance(dot,fighter) < (dot.radius + fighter.radius) 
-	){
+	if ( dot.collidable && distance(dot,fighter) < (dot.radius + fighter.radius) ) {
 		game_lose()
 	}
 
@@ -225,16 +219,16 @@ var game_init = function(canvas, width, height, scale) {
 
 	var countdown = gen_game_text( '3', 80 )
 
-	setTimeout(function() {
-		if( countdown.text-- === 1 ){
+	setTimeout(function loop() {
+		if ( countdown.text-- === 1 ) {
 			stage.remove( countdown )
 			game_start()
-		}else{
-			setTimeout(arguments.callee,1000)
+		} else {
+			setTimeout(loop, 1000)
 		}
-	},1000)
+	}, 1000)
+	
 	stage.add( countdown )
-
 }
 
 module.exports = Object.create({
